@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Double-blind: no author names, affiliations, emails, analytics, or external trackers. -->
-  <title>Paper Title &mdash; Project Page</title>
+  <title>The Contextual Correspondence Problem</title>
   <style>
     :root {
       --fg: #1a1a1a;
@@ -40,7 +40,43 @@
       border-bottom: 1px solid var(--border);
       padding-bottom: 6px;
     }
+    h3 {
+      font-size: 1.08rem;
+      margin: 24px 0 4px;
+    }
     p { margin: 0 0 16px; }
+    .result p { margin: 0 0 8px; }
+    em.num { font-style: normal; font-weight: 600; color: var(--accent); }
+    figure.fig { margin: 20px 0 8px; }
+    figure.fig img {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: block;
+    }
+    .teaser { margin: 8px 0 0; }
+    .tablewrap { overflow-x: auto; margin: 8px 0 4px; }
+    table.data {
+      border-collapse: collapse;
+      width: 100%;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+    table.data th, table.data td {
+      padding: 5px 8px;
+      text-align: center;
+      border-bottom: 1px solid #eaecef;
+    }
+    table.data thead th { border-bottom: 1px solid #aaa; }
+    table.data td:first-child, table.data th:first-child {
+      text-align: left;
+      white-space: nowrap;
+    }
+    table.data td b { color: var(--accent); }
+    table.data tr.sub td:first-child { padding-left: 20px; color: var(--muted); font-style: italic; }
+    table.data tr.group td { border-top: 1px solid #aaa; }
+    table.data tr.ref td { color: var(--muted); font-style: italic; }
+    .caption { color: var(--muted); font-size: 0.85rem; margin: 4px 0 0; text-align: left; }
     .abstract { text-align: justify; }
     figure { margin: 0; }
     video {
@@ -67,19 +103,51 @@
 <body>
 
   <header>
-    <h1>Paper Title Goes Here</h1>
+    <h1>The Contextual Correspondence Problem</h1>
     <!-- Double-blind: keep authors anonymous until camera-ready. -->
     <p class="authors">Anonymous Author(s)</p>
     <p class="venue">Under review. Please do not distribute.</p>
   </header>
 
+  <figure class="fig teaser">
+    <img src="assets/teaser.png" alt="Contextual correspondence overview" />
+    <!-- <figcaption class="caption">
+      <strong>Contextual correspondence</strong> conditions matching on an interaction
+      context: the same mug rim corresponds to a teapot&rsquo;s spout for <em>pouring
+      out</em> or to its top opening for <em>receiving liquid</em>. One formulation
+      unifies different tasks, including but not limited to functional point
+      matching, articulated object reconstruction, and manipulation transfer.
+    </figcaption> -->
+  </figure>
+
   <section>
     <h2>Abstract</h2>
     <p class="abstract">
-      Replace this paragraph with your abstract. Keep the wording free of any
-      information that could de-anonymize the authors (institution names, project
-      codenames, prior-work self-citations phrased as &ldquo;our&rdquo;, dataset or
-      cluster names tied to a specific lab, etc.).
+      Image correspondence is a fundamental problem in vision and a useful spatial
+      interface for robotics, where correspondences can ground reconstruction, contact
+      selection, and action transfer. It is often formulated as <em>context-free</em>,
+      where correspondences are determined solely by &ldquo;visual similarity,&rdquo;
+      which is inherently ambiguous. In embodied settings, the correct match depends on
+      the intended use: the same rim point on a mug may correspond to a teapot&rsquo;s
+      spout when pouring liquid out, or to its top opening when receiving liquid.
+    </p>
+    <p class="abstract">
+      In this paper, we introduce <strong>contextual correspondence</strong>, in which
+      the correspondence-matching task is conditioned on contextual information, such as
+      language or visual cues. Under this view, classical correspondence is a special
+      case where the context is empty, while task-level functional correspondence is a
+      special case where the context is a discrete label (e.g., &ldquo;pouring
+      from&rdquo;). We instantiate this formulation using off-the-shelf promptable
+      foundation models and propose an evaluation suite consisting of 2D functional
+      keypoint matching, 3D articulated object reconstruction, and manipulation
+      trajectory transfer in both simulation and on a real robot arm.
+    </p>
+    <p class="abstract">
+      Without additional training, explicit context conditioning consistently improves
+      correspondence accuracy and downstream task success, with the largest gains
+      occurring in settings where visual similarity alone is ambiguous. We also show
+      that even strong foundation models remain unreliable in many cases, leaving
+      contextual correspondence as an open problem for embodied perception and action.
     </p>
   </section>
 
@@ -94,6 +162,202 @@
       </video>
       <figcaption>Supplementary video.</figcaption>
     </figure>
+  </section>
+
+  <section class="result">
+    <h2>Results</h2>
+    <p>
+      We instantiate contextual correspondence with off-the-shelf promptable foundation
+      models &mdash; <strong>Nano-Banana&nbsp;2</strong> and
+      <strong>Gemini-ER&nbsp;1.6</strong> &mdash; and test it across four applications.
+      The core comparison is always the same model and pipeline, <em>with</em> versus
+      <em>without</em> the task context, against context-free feature baselines (DINOv2,
+      DINOv3, DiFT, TLFR, CLIP). Across all four, adding context consistently helps, with
+      the largest gains exactly where visual similarity alone is ambiguous. In every
+      table, <b>blue</b> marks the best result in a column.
+    </p>
+
+    <h3>1. Functional Point Matching (2D)</h3>
+    <p>
+      Prompt-based models already have strong generic priors, but explicit context still
+      improves matching accuracy (PCK at three thresholds). The gains are largest on
+      Contextual FunKPoint, where the intended interaction determines the correct match.
+    </p>
+    <figure class="fig">
+      <img src="assets/exp1.jpg" alt="Qualitative comparison on FunKPoint" />
+      <figcaption class="caption">
+        Qualitative comparison on FunKPoint (top) and Contextual FunKPoint (bottom).
+        Adding context (<em>w/ ctx</em>) shifts predictions toward the task-relevant
+        target; dots mark ground truth.
+      </figcaption>
+    </figure>
+    <div class="tablewrap">
+      <table class="data">
+        <thead>
+          <tr>
+            <th rowspan="2">Method</th>
+            <th colspan="3">FunKPoint Random</th>
+            <th colspan="3">FunKPoint Selected</th>
+            <th colspan="3">Contextual FunKPoint</th>
+          </tr>
+          <tr>
+            <th>@0.05</th><th>@0.10</th><th>@0.15</th>
+            <th>@0.05</th><th>@0.10</th><th>@0.15</th>
+            <th>@0.05</th><th>@0.10</th><th>@0.15</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Nano-Banana 2</td><td><b>0.317</b></td><td><b>0.484</b></td><td>0.586</td><td><b>0.290</b></td><td>0.438</td><td>0.548</td><td><b>0.460</b></td><td><b>0.624</b></td><td><b>0.699</b></td></tr>
+          <tr class="sub"><td>w/o context</td><td>0.290</td><td>0.429</td><td>0.541</td><td>0.217</td><td>0.339</td><td>0.439</td><td>0.259</td><td>0.419</td><td>0.511</td></tr>
+          <tr><td>Gemini-ER 1.6</td><td>0.261</td><td>0.480</td><td><b>0.624</b></td><td>0.248</td><td><b>0.462</b></td><td><b>0.579</b></td><td>0.436</td><td>0.622</td><td>0.685</td></tr>
+          <tr class="sub"><td>w/o context</td><td>0.258</td><td>0.451</td><td>0.584</td><td>0.213</td><td>0.377</td><td>0.487</td><td>0.354</td><td>0.483</td><td>0.564</td></tr>
+          <tr class="group"><td>DINOv2</td><td>0.146</td><td>0.324</td><td>0.423</td><td>0.118</td><td>0.254</td><td>0.371</td><td>0.239</td><td>0.436</td><td>0.503</td></tr>
+          <tr><td>DINOv3</td><td>0.123</td><td>0.275</td><td>0.404</td><td>0.114</td><td>0.241</td><td>0.337</td><td>0.264</td><td>0.460</td><td>0.515</td></tr>
+          <tr><td>DiFT</td><td>0.135</td><td>0.259</td><td>0.350</td><td>0.105</td><td>0.201</td><td>0.309</td><td>0.307</td><td>0.411</td><td>0.521</td></tr>
+          <tr><td>TLFR</td><td>0.133</td><td>0.246</td><td>0.330</td><td>0.113</td><td>0.218</td><td>0.287</td><td>0.209</td><td>0.319</td><td>0.387</td></tr>
+          <tr><td>CLIP</td><td>0.054</td><td>0.070</td><td>0.140</td><td>0.044</td><td>0.115</td><td>0.185</td><td>0.074</td><td>0.160</td><td>0.227</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">PCK on FunKPoint and Contextual FunKPoint (higher is better).</p>
+
+    <h3>2. 3D Articulated Object Reconstruction</h3>
+    <p>
+      Predicted correspondences feed an RGB-only articulation-estimation pipeline. Context
+      helps the model place keypoints on the <em>moving</em> part rather than a visually
+      similar static region, avoiding degenerate axis estimates. The pipeline is also
+      lightweight &mdash; under <em class="num">15&nbsp;s</em> per instance versus
+      <em class="num">8+&nbsp;min</em> for the point-cloud-based iTACO reference &mdash;
+      which it approaches in several categories.
+    </p>
+    <figure class="fig">
+      <img src="assets/articulation.jpg" alt="3D articulation reconstruction" />
+      <figcaption class="caption">
+        RGB-only pipeline (left) and qualitative comparison on Microwave (top) and Table
+        (bottom). Lines are the projected joint axes; adding context promotes points that
+        better represent the motion.
+      </figcaption>
+    </figure>
+    <div class="tablewrap">
+      <table class="data">
+        <thead>
+          <tr>
+            <th rowspan="2">Method</th>
+            <th colspan="2">Dishwasher</th>
+            <th colspan="2">Laptop</th>
+            <th colspan="2">Microwave</th>
+            <th>Table (P.)</th>
+            <th colspan="2">Washing Mach.</th>
+          </tr>
+          <tr>
+            <th>ori°</th><th>pos</th>
+            <th>ori°</th><th>pos</th>
+            <th>ori°</th><th>pos</th>
+            <th>ori°</th>
+            <th>ori°</th><th>pos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Nano-Banana 2</td><td>27.33</td><td><b>0.273</b></td><td><b>7.66</b></td><td><b>0.058</b></td><td>6.55</td><td>0.039</td><td><b>8.61</b></td><td><b>40.24</b></td><td><b>0.166</b></td></tr>
+          <tr class="sub"><td>w/o context</td><td>33.60</td><td>0.362</td><td>9.92</td><td>0.057</td><td>6.90</td><td>0.042</td><td>11.20</td><td>43.90</td><td>0.216</td></tr>
+          <tr><td>Gemini-ER 1.6</td><td><b>20.89</b></td><td>0.363</td><td>10.03</td><td>0.084</td><td><b>4.23</b></td><td>0.040</td><td>15.20</td><td>49.54</td><td>0.369</td></tr>
+          <tr class="sub"><td>w/o context</td><td>21.75</td><td>0.389</td><td>10.45</td><td>0.113</td><td>5.49</td><td>0.042</td><td>15.96</td><td>49.04</td><td>0.268</td></tr>
+          <tr class="group"><td>DINOv3</td><td>23.64</td><td>0.281</td><td>23.64</td><td>0.090</td><td>7.89</td><td><b>0.026</b></td><td>10.08</td><td>57.72</td><td>0.300</td></tr>
+          <tr><td>DINOv2</td><td>24.80*</td><td>0.470*</td><td>13.70</td><td>0.189</td><td>21.30</td><td>0.090</td><td>10.48*</td><td>58.70</td><td>0.210</td></tr>
+          <tr><td>TLFR</td><td>29.67</td><td>0.304</td><td>11.18</td><td>0.206</td><td>28.68</td><td>0.156</td><td>23.77</td><td>52.78*</td><td>0.210*</td></tr>
+          <tr class="ref"><td>iTACO&dagger;</td><td>14.07</td><td>0.130</td><td>21.25</td><td>0.090</td><td>7.27</td><td>0.100</td><td>20.25</td><td>7.53</td><td>0.040</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">
+      Per-category articulation estimation (lower is better); orientation in degrees,
+      position in meters. iTACO&dagger; uses point-cloud reconstruction and is excluded
+      from ranking; * marks degenerate runs.
+    </p>
+
+    <h3>3. Simulated Manipulation (Trajectory Transfer)</h3>
+    <p>
+      We transfer a demonstrated contact configuration to novel objects on Scooping,
+      Hanging, and Hooking, building on MAGIC and swapping only the correspondence module.
+      Context substantially raises success rates; most strikingly, on Hooking the
+      context-free prompt-based variants fail completely.
+    </p>
+    <figure class="fig">
+      <img src="assets/magic.jpg" alt="Simulation manipulation transfer" />
+      <figcaption class="caption">
+        Pipeline (left) and qualitative results on Hooking (top) and Hanging (bottom).
+        Without context, contact points land on visually plausible but functionally wrong
+        locations, causing the transferred grasp to fail.
+      </figcaption>
+    </figure>
+    <div class="tablewrap">
+      <table class="data">
+        <thead>
+          <tr><th>Method</th><th>Scooping</th><th>Hanging</th><th>Hooking</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Gemini-ER 1.6</td><td>0.333</td><td><b>0.727</b></td><td>0.200</td></tr>
+          <tr class="sub"><td>w/o context</td><td>0.167</td><td>0.364</td><td>0.000</td></tr>
+          <tr><td>Nano-Banana 2</td><td><b>0.667</b></td><td>0.697</td><td><b>0.550</b></td></tr>
+          <tr class="sub"><td>w/o context</td><td>0.500</td><td>0.273</td><td>0.000</td></tr>
+          <tr class="group"><td>DINO w/o rot.</td><td>0.500</td><td>0.000</td><td>0.100</td></tr>
+          <tr><td>DINO w/ rot.&dagger;</td><td><b>0.667</b></td><td>0.636</td><td>0.400</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">Success rate on MAGIC simulation manipulation (higher is better).</p>
+
+    <h3>4. Real-World Robot Manipulation</h3>
+    <p>
+      On a real arm (Dropping, Lifting, Hooking), explicit context improves every task.
+      Lifting rises from <em class="num">0.200</em> to <em class="num">0.567</em> and
+      Hooking from <em class="num">0.433</em> to <em class="num">0.733</em> for Gemini-ER.
+      The reference image is essential: removing it (ER w/o ref.) drops Lifting to
+      <em class="num">0.067</em>. Even so, the best success rates stay well below
+      saturation &mdash; contextual correspondence remains an open problem in physical
+      deployment.
+    </p>
+    <figure class="fig">
+      <img src="assets/real-word.jpg" alt="Real-world manipulation transfer" />
+      <figcaption class="caption">
+        Pipeline (left) and qualitative results on Lifting (top) and Hooking (bottom).
+        Without context, predicted keypoints miss the task-relevant geometry.
+      </figcaption>
+    </figure>
+    <div class="tablewrap">
+      <table class="data">
+        <thead>
+          <tr><th>Method</th><th>Dropping</th><th>Lifting</th><th>Hooking</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Gemini-ER 1.6</td><td><b>0.767</b></td><td><b>0.567</b></td><td><b>0.733</b></td></tr>
+          <tr class="sub"><td>w/o context</td><td>0.567</td><td>0.200</td><td>0.433</td></tr>
+          <tr><td>Nano-Banana 2</td><td>0.533</td><td>0.400</td><td>0.500</td></tr>
+          <tr class="sub"><td>w/o context</td><td>0.267</td><td>0.067</td><td>0.233</td></tr>
+          <tr class="group"><td>DINOv3</td><td>0.100</td><td>0.000</td><td>0.067</td></tr>
+          <tr><td>DINOv2</td><td>0.233</td><td>0.133</td><td>0.033</td></tr>
+          <tr><td>DiFT</td><td>0.400</td><td>0.200</td><td>0.367</td></tr>
+          <tr class="group"><td>ER w/o ref.</td><td>0.367</td><td>0.067</td><td>0.400</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="caption">
+      Real-world manipulation success rate, averaged over 3 rounds of 10 trials
+      (higher is better).
+    </p>
+  </section>
+
+  <section>
+    <h2>Conclusion</h2>
+    <p>
+      We formulate contextual correspondence as a context-conditioned mapping between
+      image-level queries, recovering classical and discrete-label functional
+      correspondence as special cases. Across four embodied reasoning and manipulation
+      settings, prompting off-the-shelf foundation models with explicit context
+      substantially improves correspondence and downstream success over context-free
+      baselines. Yet even strong foundation models remain unreliable, leaving contextual
+      correspondence an open problem for embodied perception and action.
+    </p>
   </section>
 
   <footer>

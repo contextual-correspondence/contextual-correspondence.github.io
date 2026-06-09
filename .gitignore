@@ -4,3 +4,6 @@ video_source_backup.mp4
 # ffmpeg two-pass logs
 ffmpeg2pass-*.log
 ffmpeg2pass-*.log.mbtree
+
+# paper source
+tex
