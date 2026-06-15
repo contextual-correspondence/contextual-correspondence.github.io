@@ -77,6 +77,41 @@
     table.data tr.group td { border-top: 1px solid #aaa; }
     table.data tr.ref td { color: var(--muted); font-style: italic; }
     .caption { color: var(--muted); font-size: 0.85rem; margin: 4px 0 0; text-align: left; }
+    .demo-task { margin-top: 20px; }
+    .demo-task h3 { margin: 0 0 8px; }
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    figure.demo { margin: 0; }
+    figure.demo video {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #000;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      display: block;
+      object-fit: cover;
+    }
+    figure.demo figcaption {
+      text-align: left;
+      font-size: 0.82rem;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: #fff;
+      padding: 1px 7px;
+      border-radius: 999px;
+      margin-right: 6px;
+      vertical-align: 1px;
+    }
+    .tag.er { background: var(--accent); }
+    .tag.nb { background: #b7791f; }
     .abstract { text-align: justify; }
     figure { margin: 0; }
     video {
@@ -167,9 +202,9 @@
   <section class="result">
     <h2>Results</h2>
     <p>
-      We instantiate contextual correspondence with off-the-shelf promptable foundation
-      models &mdash; <strong>Nano-Banana&nbsp;2</strong> and
-      <strong>Gemini-ER&nbsp;1.6</strong> &mdash; and test it across four applications.
+      We instantiate contextual correspondence with two off-the-shelf promptable
+      foundation models, <strong>Nano-Banana&nbsp;2</strong> and
+      <strong>Gemini-ER&nbsp;1.6</strong>, and test it across four applications.
       The core comparison is always the same model and pipeline, <em>with</em> versus
       <em>without</em> the task context, against context-free feature baselines (DINOv2,
       DINOv3, DiFT, TLFR, CLIP). Across all four, adding context consistently helps, with
@@ -226,9 +261,9 @@
       Predicted correspondences feed an RGB-only articulation-estimation pipeline. Context
       helps the model place keypoints on the <em>moving</em> part rather than a visually
       similar static region, avoiding degenerate axis estimates. The pipeline is also
-      lightweight &mdash; under <em class="num">15&nbsp;s</em> per instance versus
-      <em class="num">8+&nbsp;min</em> for the point-cloud-based iTACO reference &mdash;
-      which it approaches in several categories.
+      lightweight: under <em class="num">15&nbsp;s</em> per instance versus
+      <em class="num">8+&nbsp;min</em> for the point-cloud-based iTACO reference, which
+      it approaches in several categories.
     </p>
     <figure class="fig">
       <img src="assets/articulation.jpg" alt="3D articulation reconstruction" />
@@ -314,7 +349,7 @@
       Hooking from <em class="num">0.433</em> to <em class="num">0.733</em> for Gemini-ER.
       The reference image is essential: removing it (ER w/o ref.) drops Lifting to
       <em class="num">0.067</em>. Even so, the best success rates stay well below
-      saturation &mdash; contextual correspondence remains an open problem in physical
+      saturation, so contextual correspondence remains an open problem in physical
       deployment.
     </p>
     <figure class="fig">
@@ -345,6 +380,43 @@
       Real-world manipulation success rate, averaged over 3 rounds of 10 trials
       (higher is better).
     </p>
+
+    <h3>Demo Rollouts</h3>
+    <p>
+      Successful rollouts on a real robot arm, grouped by task. Each model
+      (<span class="tag er">Gemini ER</span>, <span class="tag nb">Nano Banana 2</span>)
+      is shown on two target tools.
+    </p>
+
+    <div class="demo-task">
+      <h3>Dropping</h3>
+      <div class="demo-grid">
+        <figure class="demo"><video muted loop playsinline preload="none" poster="assets/demos/ER_drop.jpg" data-src="assets/demos/ER_drop.mp4"></video><figcaption><span class="tag er">Gemini ER</span>Tool 1</figcaption></figure>
+        <figure class="demo"><video muted loop playsinline preload="none" poster="assets/demos/ER_drop2.jpg" data-src="assets/demos/ER_drop2.mp4"></video><figcaption><span class="tag er">Gemini ER</span>Tool 2</figcaption></figure>
+        <figure class="demo"><video muted loop playsinline preload="none" poster="assets/demos/NB_drop.jpg" data-src="assets/demos/NB_drop.mp4"></video><figcaption><span class="tag nb">Nano Banana 2</span>Tool 1</figcaption></figure>
+        <figure class="demo"><video muted loop playsinline preload="none" poster="assets/demos/NB_drop2.jpg" data-src="assets/demos/NB_drop2.mp4"></video><figcaption><span class="tag nb">Nano Banana 2</span>Tool 2</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="demo-task">
+      <h3>Lifting</h3>
+      <div class="demo-grid">
+        <figure class="demo"><video muted loop playsinline preload="none" poster="assets/demos/ER_lift.jpg" data-src="assets/demos/ER_lift.mp4"></video><figcaption><span class="tag er">Gemini ER</span>Tool 1</figcaption></figure>
+        <figure class="demo"><video muted loop playsinline preload="none" poster="assets/demos/ER_lift2.jpg" data-src="assets/demos/ER_lift2.mp4"></video><figcaption><span class="tag er">Gemini ER</span>Tool 2</figcaption></figure>
+        <figure class="demo"><video muted loop playsinline preload="none" poster="assets/demos/NB_lift.jpg" data-src="assets/demos/NB_lift.mp4"></video><figcaption><span class="tag nb">Nano Banana 2</span>Tool 1</figcaption></figure>
+        <figure class="demo"><video muted loop playsinline preload="none" poster="assets/demos/NB_lift2.jpg" data-src="assets/demos/NB_lift2.mp4"></video><figcaption><span class="tag nb">Nano Banana 2</span>Tool 2</figcaption></figure>
+      </div>
+    </div>
+
+    <div class="demo-task">
+      <h3>Hooking</h3>
+      <div class="demo-grid">
+        <figure class="demo"><video muted loop playsinline preload="none" poster="assets/demos/ER_hook.jpg" data-src="assets/demos/ER_hook.mp4"></video><figcaption><span class="tag er">Gemini ER</span>Tool 1</figcaption></figure>
+        <figure class="demo"><video muted loop playsinline preload="none" poster="assets/demos/ER_hook2.jpg" data-src="assets/demos/ER_hook2.mp4"></video><figcaption><span class="tag er">Gemini ER</span>Tool 2</figcaption></figure>
+        <figure class="demo"><video muted loop playsinline preload="none" poster="assets/demos/NB_hook.jpg" data-src="assets/demos/NB_hook.mp4"></video><figcaption><span class="tag nb">Nano Banana 2</span>Tool 1</figcaption></figure>
+        <figure class="demo"><video muted loop playsinline preload="none" poster="assets/demos/NB_hook2.jpg" data-src="assets/demos/NB_hook2.mp4"></video><figcaption><span class="tag nb">Nano Banana 2</span>Tool 2</figcaption></figure>
+      </div>
+    </div>
   </section>
 
   <section>
@@ -363,6 +435,30 @@
   <footer>
     This page is anonymized for double-blind review.
   </footer>
+
+  <script>
+    // Lazy-load demo clips and play only while in view (keeps the page light;
+    // fully local, no external requests, double-blind safe).
+    (function () {
+      var vids = document.querySelectorAll('figure.demo video[data-src]');
+      if (!('IntersectionObserver' in window)) {
+        vids.forEach(function (v) { v.src = v.dataset.src; });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          var v = e.target;
+          if (e.isIntersecting) {
+            if (!v.src) { v.src = v.dataset.src; }
+            v.play().catch(function () {});
+          } else {
+            v.pause();
+          }
+        });
+      }, { rootMargin: '200px 0px' });
+      vids.forEach(function (v) { io.observe(v); });
+    })();
+  </script>
 
 </body>
 </html>

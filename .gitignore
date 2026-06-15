@@ -7,3 +7,6 @@ ffmpeg2pass-*.log.mbtree
 
 # paper source
 tex
+
+# raw demo source clips (web-ready copies live in assets/demos/)
+real_world_supplements
